@@ -1,0 +1,31 @@
+{
+  "name": "express-sequelize-passport",
+  "version": "1.0.0",
+  "description": "auth and todo list",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oleksanderkhomenko/express-sequelize-passport-todo.git"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "~1.10.1",
+    "cookie-session": "~1.1.0",
+    "ejs": "^2.1.4",
+    "express": "~4.11.0",
+    "express-session": "^1.15.3",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "sequelize": "^3.30.4",
+    "sqlite3": "^3.1.8"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oleksanderkhomenko/express-sequelize-passport-todo/issues"
+  },
+  "homepage": "https://github.com/oleksanderkhomenko/express-sequelize-passport-todo#readme"
+}
