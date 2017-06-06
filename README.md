@@ -5,6 +5,4 @@
 
 ## Usage
 1. run "node app" from the project folder
-2. [Follow to][1]
-
-[1]: localhost:8080/
+2. Follow to - localhost:8080/
