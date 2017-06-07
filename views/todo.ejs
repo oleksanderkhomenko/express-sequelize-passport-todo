@@ -1,71 +1,32 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <title>My todolist</title>
-        <style>
-            a {text-decoration: none; color: black;}
-        </style>
-    </head>
+	<head>
+		<title>My todolist</title>
+		<style>
+			a {text-decoration: none; color: black;}
+		</style>
+	</head>
 
-    <body>
-        <a href="/logout">Logout</a>
-        <h1>My todolist</h1>
-        <ul>
-        <% todolist.forEach(function(todo, index) { %>
-            <li><a class="row-<%= todo.id %>" onclick="deleteRow(<%= todo.id %>);">✘</a> <%= todo.info %></li>
-        <% }); %>
-        </ul>
+	<body>
+		<a class="click-element" href="/logout">Logout</a>
+		<h1>My todolist</h1>
+		<ul>
+		<% todolist.forEach(function(todo, index) { %>
+			<li><a class="click-element row-<%= todo.id %>" onclick="deleteRow(<%= todo.id %>);">✘</a> <%= todo.info %></li>
+		<% }); %>
+		</ul>
 
-        <form id="myForm" action="/todo/add" method="post">
-            <p>
-                <label for="newtodo">What should I do?</label>
-                <input type="text" name="newtodo" id="newtodo" autofocus />
-                <input type="submit" value="add" />
-            </p>
-        </form>
+		<form id="myForm" action="/todo/add" method="post">
+			<p>
+				<label for="newtodo">What should I do?</label>
+				<input type="text" name="newtodo" id="newtodo" autofocus />
+				<input type="submit" value="add" />
+			</p>
+		</form>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script>
-            $('#myForm').on('submit', function (event) {
-                event.preventDefault(); // Stop the form from causing a page refresh.
-                var data = {newtodo: $('#newtodo').val()};
-
-                $.ajax({
-                  type: 'POST',
-                  data: JSON.stringify(data),
-                  contentType: 'application/json',
-                  url: 'http://localhost:8080/todo/add',
-                  success: function(data) {
-                    $('body ul').append('<li><a class="row-'+data.id+'" onclick="deleteRow('+data.id+');">✘</a> '+data.info+' </li>');
-                  }
-                });
-                // .then(function (response) {
-                //   console.log(response);
-                //   // Do stuff with the response, like add it to the page dynamically.
-                // }).catch(function (err) {
-                //   console.error(err);
-                // });
-              });
-
-            function deleteRow(id) {
-              event.preventDefault();
-              var data = {id: id};
-              $.ajax({
-                  type: 'POST',
-                  data: JSON.stringify(data),
-                  contentType: 'application/json',
-                  url: 'http://localhost:8080/todo/delete',
-                  success: function(data) {
-                    $('.row-'+id).parent().remove();
-                  }
-                });
-                // .then(function (response) {
-                //   console.log(response);
-                // }).catch(function (err) {
-                //   console.error(err);
-                // });
-              }
-        </script>
-    </body>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="js/manage.js"></script>
+	</body>
+	<link rel="stylesheet" type="text/css" href="css/manage.css" />
 </html>

@@ -18,9 +18,11 @@ app.use(bodyParser.json());
 app.use(session({secret: 'todotopsecret',resave: true, saveUninitialized:true}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.static(__dirname + '/public'));
 
 //load passport strategies
 require('./passport/passport.js')(passport,User);
+//load logic
 require('./logic/index.js')(app,passport,List);
 
 app.listen(8080);
