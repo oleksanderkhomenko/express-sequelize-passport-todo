@@ -54,17 +54,21 @@ module.exports = function(app, passport, List) {
 		res.render('signup.ejs');
 	});
 
-	app.post('/signup', passport.authenticate('local-signup', {successRedirect: '/todo', failureRedirect: '/signup'}));
+	app.post('/signup', passport.authenticate('local-signup', {successRedirect: '/chat', failureRedirect: '/signup'}));
 
 	app.get('/signin',  isNotLoggedIn, function(req, res){
 		res.render('signin.ejs');
 	});
 
-	app.post('/signin', passport.authenticate('local-signin', { successRedirect: '/todo', failureRedirect: '/signin'}));
+	app.post('/signin', passport.authenticate('local-signin', { successRedirect: '/chat', failureRedirect: '/signin'}));
 
 	app.get('/logout',  function(req, res){
 		req.session.destroy(function(err) {
 			res.redirect('/signin');
 		});
+	});
+
+	app.get('/chat', isLoggedIn, function(req,res){
+		res.render('chat.ejs');
 	});
 };

@@ -1,4 +1,25 @@
 .click-element {
-	cursor: pointer;
-	color: #7c92ad;
+  cursor: pointer;
+  color: #7c92ad;
+}
+
+#messages {
+    width: 500px;
+    height: 200px;
+    overflow: scroll;
+    border: 1px solid;
+}
+
+.message {
+  border: 1px solid;
+  margin-bottom: 2px;
+}
+
+.user-name {
+  border-bottom: 1px solid;
+  background: gray;
+}
+
+.user-text {
+  background: #ffb9b9;
 }

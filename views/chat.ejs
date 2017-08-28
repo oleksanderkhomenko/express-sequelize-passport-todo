@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>My todolist</title>
+		<style>
+			a {text-decoration: none; color: black;}
+		</style>
+	</head>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script>
+	  $(function () {
+	    var socket = io();
+	    $('form').submit(function(){
+	      socket.emit('chat message', $('#newmessage').val());
+	      $('#newmessage').val('');
+	      return false;
+	    });
+	    socket.on('chat message', function(data){
+    		$('#messages').append($('<div class="message"><div class="user-name">'+data.username+'</div><div class="user-text">'+data.msg+'</div></div>'));
+    		$('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 200);
+      });
+	  });
+	</script>
+
+	<body>
+		<a class="click-element" href="/">Todo</a>
+
+		<div id="messages"></div>
+    <form action="">
+      <input id="newmessage" autocomplete="off" autofocus="" /><button>Send</button>
+    </form>
+
+	</body>
+	<link rel="stylesheet" type="text/css" href="css/manage.css" />
+</html>
