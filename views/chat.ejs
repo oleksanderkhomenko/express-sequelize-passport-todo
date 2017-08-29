@@ -11,15 +11,20 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script>
 	  $(function () {
-	    var socket = io();
+	    var socket = io('/chat');
 	    $('form').submit(function(){
 	      socket.emit('chat message', $('#newmessage').val());
 	      $('#newmessage').val('');
 	      return false;
 	    });
 	    socket.on('chat message', function(data){
-    		$('#messages').append($('<div class="message"><div class="user-name">'+data.username+'</div><div class="user-text">'+data.msg+'</div></div>'));
-    		$('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 200);
+    		$('#messages').append($('<div class="message"><div class="user-name">'+data.username+'</div><div class="user-text">'+data.msg+'</div></div>')).animate({scrollTop: $('#messages').prop("scrollHeight")}, 200);
+      });
+      socket.on('users', function(users) {
+      	$('#members').empty();
+      	$.each(users, function(index, value) {
+	      	$('#members').append($('<div class="member">'+value+'</div>'));
+				});
       });
 	  });
 	</script>
@@ -27,7 +32,10 @@
 	<body>
 		<a class="click-element" href="/">Todo</a>
 
-		<div id="messages"></div>
+		<div id="chat-el">
+			<div id="messages"></div>
+			<div id="members"></div>
+		</div>
     <form action="">
       <input id="newmessage" autocomplete="off" autofocus="" /><button>Send</button>
     </form>

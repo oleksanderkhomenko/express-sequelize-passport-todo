@@ -8,7 +8,9 @@ var List = require('./models/list')(db.Sequelize,db.sequelize);
 var User = require('./models/user')(db.Sequelize,db.sequelize);
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var sharedsession = require("express-socket.io-session");
+var sharedsession = require("express-socket.io-session")(session, {
+    autoSave:true
+});
 
 User.hasMany(List, {foreignKey: 'user_id', sourceKey: 'id'});
 List.belongsTo(User, {foreignKey: 'user_id', sourceKey: 'id'});
@@ -22,24 +24,37 @@ app.use(session);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
-io.use(sharedsession(session, {
-    autoSave:true
-}));
+io.use(sharedsession);
 
 //load passport strategies
 require('./passport/passport.js')(passport,User);
 //load logic
 require('./logic/index.js')(app,passport,List);
 
-io.on('connection', function(socket){
+
+var users = {};
+var chat = io.of('/chat');
+chat.use(sharedsession);
+chat.on('connection', function(socket){
 	if(socket.handshake.session.passport && socket.handshake.session.passport.user) {
 		var userID = socket.handshake.session.passport.user;
 		User.findById(userID).then(function(user) {
 			var username = user.firstname;
 
+			// add user to all users
+			users[userID] = username;
+			chat.emit('users', users);
+
+			socket.on('disconnect', function() {
+				// remove user from all users
+			  delete users[userID];
+			  chat.emit('users', users);
+		  });
+
+			// sen message to chat
 		  socket.on('chat message', function(msg){
 		  	if(msg.trim().length > 0) {
-			    io.emit('chat message', {msg: msg, username: username});
+			    chat.emit('chat message', {msg: msg, username: username});
 		  	}
 		  });
 		});
