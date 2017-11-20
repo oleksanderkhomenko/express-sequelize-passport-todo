@@ -13,18 +13,31 @@
 	  $(function () {
 	    var socket = io('/chat');
 	    $('form').submit(function(){
-	      socket.emit('chat message', $('#newmessage').val());
+	    	if($('#newmessage').val().trim() != '') {
+		      socket.emit('chat message', $('#newmessage').val());
+	    	}
 	      $('#newmessage').val('');
 	      return false;
 	    });
+
 	    socket.on('chat message', function(data){
     		$('#messages').append($('<div class="message"><div class="user-name">'+data.username+'</div><div class="user-text">'+data.msg+'</div></div>')).animate({scrollTop: $('#messages').prop("scrollHeight")}, 200);
       });
+
       socket.on('users', function(users) {
       	$('#members').empty();
       	$.each(users, function(index, value) {
 	      	$('#members').append($('<div class="member">'+value+'</div>'));
 				});
+      });
+
+      $('#members').on('click', '.member', function() {
+      	socket.emit('enter room', $(this).html())
+      });
+      socket.on('enter room', function(reset) {
+      	if(reset) {
+      		$('#messages').empty();
+      	}
       });
 	  });
 	</script>

@@ -32,13 +32,14 @@ require('./passport/passport.js')(passport,User);
 require('./logic/index.js')(app,passport,List);
 
 
-var users = {};
+var users = {0: "all"};
 var chat = io.of('/chat');
 chat.use(sharedsession);
 chat.on('connection', function(socket){
 	if(socket.handshake.session.passport && socket.handshake.session.passport.user) {
 		var userID = socket.handshake.session.passport.user;
 		User.findById(userID).then(function(user) {
+			socket.emit('chat message', {username: "tech", msg: "Join room to start chatting"});
 			var username = user.firstname;
 
 			// add user to all users
@@ -49,12 +50,27 @@ chat.on('connection', function(socket){
 				// remove user from all users
 			  delete users[userID];
 			  chat.emit('users', users);
+			  socket.leave(socket.oneroom);
 		  });
 
-			// sen message to chat
+			// send message to chat
 		  socket.on('chat message', function(msg){
-		  	if(msg.trim().length > 0) {
-			    chat.emit('chat message', {msg: msg, username: username});
+				if(socket.oneroom && msg.trim().length > 0) {
+					chat.to(socket.oneroom).emit('chat message', {msg: msg, username: username});
+				}
+		  });
+
+		  // enter room
+		  socket.on('enter room', function(room){
+		  	room = "room-"+room;
+		  	if(!socket.oneroom || socket.oneroom != room) {
+			  	socket.leave(socket.oneroom);
+			  	socket.oneroom = room
+			  	socket.join(room);
+			  	socket.emit('enter room', true);
+			  	socket.emit('chat message', {username: "tech", msg: "Your room name: "+room});
+		  	} else {
+		  		socket.emit('enter room', false);
 		  	}
 		  });
 		});
@@ -62,7 +78,7 @@ chat.on('connection', function(socket){
 
 });
 
-http.listen(8080, function(){
+http.listen(process.env.PORT || 5000, function(){
   console.log('listening on *:8080');
 });
 
